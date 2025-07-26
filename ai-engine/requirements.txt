@@ -1,0 +1,9 @@
+# ai-engine/requirements.txt
+fastapi
+uvicorn
+chromadb
+sentence-transformers
+PyMuPDF
+uuid
+requests
+python-multipart

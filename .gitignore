@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environments
+ai-engine/venv/
+
+# Node.js dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Environment variables
+**/.env
+*.env
+
+# Logs
+*.log
+
+# OS system files
+.DS_Store
+Thumbs.db
+
+# Build output
+frontend/build/
+backend/build/
