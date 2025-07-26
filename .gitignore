@@ -24,3 +24,5 @@ Thumbs.db
 # Build output
 frontend/build/
 backend/build/
+
+backend/uploads/
