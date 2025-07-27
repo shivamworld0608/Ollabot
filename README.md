@@ -142,25 +142,38 @@ npm install
 npm run dev
 
 #Make sure to set the correct backend URL in your frontend env
-🤝 Contributing
-Pull requests are welcome. Please make sure to:
 
-Open an issue first for major features
+## 🤝 Contributing
 
-Follow project structure and naming conventions
+We welcome contributions from the community! Here’s how you can help:
 
-Run tests before pushing
+### 📌 Guidelines
+- 📝 **Open an Issue**  
+  For major features or changes, please open an issue first to discuss your ideas.
 
-🪪 License
-This project is licensed under the MIT License © 2025 Shivam Pandey
+- 📂 **Follow Standards**  
+  Stick to the existing **project structure** and **naming conventions** for consistency.
 
-📬 Contact
-Have questions, suggestions, or just want to connect?
+- ✅ **Test Before Push**  
+  Ensure all features are tested and stable before submitting a pull request.
 
-GitHub: @yourusername
+---
 
-Email: your.email@example.com
+## 🪪 License
 
-LinkedIn: linkedin.com/in/yourusername
+This project is licensed under the **MIT License**.  
+&copy; 2025 [Shivam Pandey](https://github.com/shivampandey)
 
-<p align="center"> Made with ❤️ by Shivam Pandey </p> ```
+> You are free to use, modify, and distribute this project with attribution.
+
+---
+
+## 📬 Contact
+
+Have questions, feedback, or just want to connect? Feel free to reach out!
+
+| Platform     | Link                                                                 |
+|--------------|----------------------------------------------------------------------|
+| **GitHub**   | [@yourusername](https://github.com/yourusername)                    |
+| **Email**    | [your.email@example.com](mailto:your.email@example.com)             |
+| **LinkedIn** | [linkedin.com/in/yourusername](https://linkedin.com/in/yourusername) |
