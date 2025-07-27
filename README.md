@@ -142,3 +142,25 @@ npm install
 npm run dev
 
 #Make sure to set the correct backend URL in your frontend env
+🤝 Contributing
+Pull requests are welcome. Please make sure to:
+
+Open an issue first for major features
+
+Follow project structure and naming conventions
+
+Run tests before pushing
+
+🪪 License
+This project is licensed under the MIT License © 2025 Shivam Pandey
+
+📬 Contact
+Have questions, suggestions, or just want to connect?
+
+GitHub: @yourusername
+
+Email: your.email@example.com
+
+LinkedIn: linkedin.com/in/yourusername
+
+<p align="center"> Made with ❤️ by Shivam Pandey </p> ```
