@@ -10,19 +10,26 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-pdf-viewer/core": "^3.12.0",
+    "@react-pdf-viewer/default-layout": "^3.12.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/vite": "^4.1.7",
     "antd": "^5.26.6",
     "aos": "^2.3.4",
+    "axios": "^1.11.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.0",
     "react-xarrows": "^2.0.2",
     "reactflow": "^11.11.4",
-    "tailwindcss": "^4.1.7"
+    "redux-persist": "^6.0.0",
+    "tailwindcss": "^4.1.7",
+    "vite-plugin-env-compatible": "^2.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

@@ -10,7 +10,7 @@ app = FastAPI()
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     contents = await file.read()
-    embed_pdf(contents)
+    embed_pdf(contents, file.filename)
     return {"status": "PDF embedded successfully"}
 
 @app.get("/query")
@@ -19,5 +19,5 @@ def ask(q: str):
     return JSONResponse(content={"question": q, "answer": answer})
 
 if __name__ == "__main__":
-    print("Starting server at http://127.0.0.1:8000")
+    print("Starting Ollabot server at http://127.0.0.1:8000")
     uvicorn.run(app, host="127.0.0.1", port=8000)

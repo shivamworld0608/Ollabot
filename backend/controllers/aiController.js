@@ -1,30 +1,32 @@
-const axios = require("axios");
-const fs = require("fs");
-const FormData = require("form-data");
+import axios from "axios";
+import fs from "fs";
+import FormData from "form-data";
+import UploadedFile from "../models/uploadedfile.js";
 
-exports.uploadPDF = async (req, res) => {
+export const uploadPDF = async (req, res) => {
   try {
-    console.log(req.file);
     const form = new FormData();
     form.append("file", fs.createReadStream(req.file.path));
-    console.log("hello i reached here");
-    const response = await axios.post("http://localhost:8000/upload", form, {
+    const response = await axios.post(`${process.env.AI_ENGINE_URL}/upload`, form, {
       headers: form.getHeaders(),
     });
-     console.log("call to ai server completed with success");
-    fs.unlinkSync(req.file.path); // Clean up temp file
-    res.json(response.data);
+    // fs.unlinkSync(req.file.path); // Clean up temp file
+    const fileUrl = `/uploads/${req.file.filename}`;
+
+    const savedFile = await UploadedFile.create({
+      filename: req.file.originalname,
+      path: fileUrl,
+    });
+
+    res.status(200).json({ message: "PDF uploaded successfully" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Failed to upload PDF", details: err.message });
   }
 };
 
-exports.queryLLM = async (req, res) => {
+export const queryLLM = async (req, res) => {
   try {
-    console.log("hello");
-    console.log("Raw body:", req.body);
-    console.log("Raw file:", req.file);
-
     const question  = req.body.question || req.body.message;
     const file = req.file;
 
@@ -34,11 +36,11 @@ exports.queryLLM = async (req, res) => {
       return res.status(400).json({ error: "Question is required" });
     }
 
-    const response = await axios.get("http://localhost:8000/query", {
+    const response = await axios.get(`${process.env.AI_ENGINE_URL}/query`, {
       params: { q: question },
     });
 
-    console.log("call to ai server completed with success",response.data);
+    console.log("call to ai server completed with success",response.data,response.data.answer.sources);
     res.json(response.data);
   } catch (err) {
     console.error("Error:", err.message);

@@ -1,53 +1,138 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trash2, Upload, AlertCircle, File, Check, Loader2, X, Search, Database } from 'lucide-react';
+import axios from 'axios';
+import { Upload, FileText, File, Loader2, Search, LogOut } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { logout } from '../Redux/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function DocumentManager() {
-  // State management
   const [documents, setDocuments] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [notification, setNotification] = useState(null);
-  const [confirmDelete, setConfirmDelete] = useState(null);
-  const fileInputRef = useRef(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [sortOption, setSortOption] = useState('date-desc');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const fileInputRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Mock data for demonstration
+  // Fetch documents from the server
+  const fetchDocuments = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_APP_BASE_URL}/uploadedfile/get`, {
+        withCredentials: true,
+      });
+      setDocuments(res.data);
+    } catch (err) {
+      showNotification('Failed to fetch documents', 'error');
+    }
+  };
+
   useEffect(() => {
-    // Simulating API call to fetch documents
-    const fetchDocuments = async () => {
-      // In a real app, this would be an API call to your backend
-      const mockDocuments = [
-        { id: '1', name: 'Annual Report 2024.pdf', size: 4200000, type: 'application/pdf', dateAdded: new Date(2024, 4, 15), status: 'processed' },
-        { id: '2', name: 'Product Documentation.pdf', size: 2800000, type: 'application/pdf', dateAdded: new Date(2024, 4, 10), status: 'processed' },
-        { id: '3', name: 'Technical Specifications.docx', size: 1500000, type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', dateAdded: new Date(2024, 4, 5), status: 'processed' },
-        { id: '4', name: 'Research Paper.pdf', size: 3700000, type: 'application/pdf', dateAdded: new Date(2024, 4, 1), status: 'processed' },
-        { id: '5', name: 'Company Policy.pdf', size: 1200000, type: 'application/pdf', dateAdded: new Date(2024, 3, 25), status: 'processing' },
-      ];
-      setDocuments(mockDocuments);
-    };
-
     fetchDocuments();
   }, []);
 
-  // Filter documents based on search query
-  const filteredDocuments = documents.filter(doc => 
-    doc.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Handle file selection
+  const handleFileSelect = (e) => {
+    if (e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  // Handle file upload
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      showNotification('Please select a file to upload', 'error');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/api/upload`, formData, {
+        withCredentials: true,
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percent);
+        },
+      });
+      setSelectedFile(null);
+      fileInputRef.current.value = '';
+      showNotification('Document uploaded successfully', 'success');
+      fetchDocuments();
+    } catch (err) {
+      showNotification('Upload failed. Try again.', 'error');
+    } finally {
+      setIsUploading(false);
+      setTimeout(() => setUploadProgress(0), 1000);
+    }
+  };
+
+  // Show notification with message and type
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  // Format file size
+  const formatSize = (bytes) => {
+    if (bytes < 1024) return `${bytes} B`;
+    else if (bytes < 1048576) return `${(bytes / 1024).toFixed(2)} KB`;
+    else return `${(bytes / 1048576).toFixed(2)} MB`;
+  };
+
+  // Format date
+  const formatDate = (iso) => {
+    return new Date(iso).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  // Handle logout with confirmation
+  const handleLogout = async () => {
+    try {
+      await axios.get(`${import.meta.env.VITE_APP_BASE_URL}/auth/logout`, {
+        withCredentials: true,
+      });
+      dispatch(logout());
+      navigate('/');
+    } catch (err) {
+      console.error('Logout failed', err);
+      showNotification('Logout failed. Try again.', 'error');
+    }
+  };
+
+  // Get file icon based on file type
+  const getFileIcon = (filename) => {
+    const ext = filename.split('.').pop().toLowerCase();
+    if (ext === 'pdf') return <FileText className="text-red-500" size={20} />;
+    if (['doc', 'docx'].includes(ext)) return <FileText className="text-blue-500" size={20} />;
+    if (ext === 'csv') return <FileText className="text-green-500" size={20} />;
+    return <File className="text-gray-500" size={20} />;
+  };
+
+  // Filter and sort documents
+  const filteredDocuments = documents.filter((doc) =>
+    doc.filename?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Sort documents based on selected option
   const sortedDocuments = [...filteredDocuments].sort((a, b) => {
     switch (sortOption) {
       case 'date-asc':
-        return a.dateAdded - b.dateAdded;
+        return new Date(a.createdAt) - new Date(b.createdAt);
       case 'date-desc':
-        return b.dateAdded - a.dateAdded;
+        return new Date(b.createdAt) - new Date(a.createdAt);
       case 'name-asc':
-        return a.name.localeCompare(b.name);
+        return a.filename.localeCompare(b.filename);
       case 'name-desc':
-        return b.name.localeCompare(a.name);
+        return b.filename.localeCompare(a.filename);
       case 'size-asc':
         return a.size - b.size;
       case 'size-desc':
@@ -57,360 +142,288 @@ export default function DocumentManager() {
     }
   });
 
-  const handleFileSelect = (e) => {
-    if (e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    }
-  };
-
-  const handleUpload = async () => {
-  if (!selectedFile) {
-    showNotification('Please select a file to upload', 'error');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('file', selectedFile);
-
-  setIsUploading(true);
-  setUploadProgress(0);
-
-  try {
-    const res = await fetch('http://localhost:5000/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      throw new Error('Upload failed');
-    }
-
-    const data = await res.json(); // Assuming response returns file metadata
-    const newDoc = {
-      id: `${Date.now()}`,
-      name: data.name || selectedFile.name,
-      size: selectedFile.size,
-      type: selectedFile.type,
-      dateAdded: new Date(),
-      status: 'processed'
-    };
-
-    setDocuments(prev => [newDoc, ...prev]);
-    setSelectedFile(null);
-    showNotification('Document successfully uploaded and embedded in ChromaDB', 'success');
-  } catch (err) {
-    console.error(err);
-    showNotification('Upload failed. Try again.', 'error');
-  } finally {
-    setIsUploading(false);
-    setUploadProgress(100);
-    setTimeout(() => setUploadProgress(0), 1000);
-  }
-};
-
-  const initiateDelete = (id) => {
-    setConfirmDelete(id);
-  };
-
-  const confirmDeleteDocument = async (id) => {
-    // In a real app, this would be an API call to delete from ChromaDB
-    setDocuments(prev => prev.filter(doc => doc.id !== id));
-    setConfirmDelete(null);
-    showNotification('Document successfully deleted from ChromaDB', 'success');
-  };
-
-  const cancelDelete = () => {
-    setConfirmDelete(null);
-  };
-
-  const showNotification = (message, type) => {
-    setNotification({ message, type });
-    setTimeout(() => {
-      setNotification(null);
-    }, 5000);
-  };
-
-  const formatSize = (bytes) => {
-    if (bytes < 1024) return bytes + ' B';
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + ' KB';
-    else return (bytes / 1048576).toFixed(2) + ' MB';
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const getFileIcon = (docType) => {
-    if (docType.includes('pdf')) {
-      return <File className="text-red-500" />;
-    } else if (docType.includes('word')) {
-      return <File className="text-blue-500" />;
-    } else if (docType.includes('spreadsheet') || docType.includes('excel')) {
-      return <File className="text-green-500" />;
-    } else {
-      return <File className="text-gray-500" />;
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0]);
-    }
-  };
+  // Vector positions for 70+ elements
+  const vectorPositions = [
+    { top: '10%', left: '5%', size: 60, type: 'pdf', opacity: 0.1 },
+    { top: '15%', left: '80%', size: 50, type: 'upload', opacity: 0.08 },
+    { top: '20%', left: '30%', size: 40, type: 'ai', opacity: 0.12 },
+    { top: '25%', left: '60%', size: 70, type: 'pdf', opacity: 0.1 },
+    { top: '30%', left: '15%', size: 55, type: 'upload', opacity: 0.09 },
+    { top: '35%', left: '90%', size: 45, type: 'ai', opacity: 0.11 },
+    { top: '40%', left: '25%', size: 65, type: 'pdf', opacity: 0.1 },
+    { top: '45%', left: '75%', size: 50, type: 'upload', opacity: 0.08 },
+    { top: '50%', left: '10%', size: 60, type: 'ai', opacity: 0.12 },
+    { top: '55%', left: '85%', size: 40, type: 'pdf', opacity: 0.09 },
+    { top: '60%', left: '20%', size: 70, type: 'upload', opacity: 0.1 },
+    { top: '65%', left: '70%', size: 55, type: 'ai', opacity: 0.11 },
+    { top: '70%', left: '15%', size: 45, type: 'pdf', opacity: 0.08 },
+    { top: '75%', left: '80%', size: 60, type: 'upload', opacity: 0.1 },
+    { top: '80%', left: '30%', size: 50, type: 'ai', opacity: 0.12 },
+    { top: '85%', left: '60%', size: 65, type: 'pdf', opacity: 0.09 },
+    { top: '90%', left: '5%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '10%', left: '95%', size: 40, type: 'ai', opacity: 0.11 },
+    { top: '15%', left: '25%', size: 60, type: 'pdf', opacity: 0.08 },
+    { top: '20%', left: '70%', size: 50, type: 'upload', opacity: 0.1 },
+    { top: '25%', left: '15%', size: 70, type: 'ai', opacity: 0.12 },
+    { top: '30%', left: '85%', size: 45, type: 'pdf', opacity: 0.09 },
+    { top: '35%', left: '20%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '40%', left: '75%', size: 65, type: 'ai', opacity: 0.11 },
+    { top: '45%', left: '10%', size: 50, type: 'pdf', opacity: 0.08 },
+    { top: '50%', left: '90%', size: 60, type: 'upload', opacity: 0.1 },
+    { top: '55%', left: '30%', size: 40, type: 'ai', opacity: 0.12 },
+    { top: '60%', left: '65%', size: 70, type: 'pdf', opacity: 0.09 },
+    { top: '65%', left: '5%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '70%', left: '80%', size: 45, type: 'ai', opacity: 0.11 },
+    { top: '75%', left: '20%', size: 60, type: 'pdf', opacity: 0.08 },
+    { top: '80%', left: '70%', size: 50, type: 'upload', opacity: 0.1 },
+    { top: '85%', left: '15%', size: 65, type: 'ai', opacity: 0.12 },
+    { top: '90%', left: '85%', size: 40, type: 'pdf', opacity: 0.09 },
+    { top: '5%', left: '30%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '10%', left: '60%', size: 60, type: 'ai', opacity: 0.11 },
+    { top: '15%', left: '10%', size: 50, type: 'pdf', opacity: 0.08 },
+    { top: '20%', left: '90%', size: 70, type: 'upload', opacity: 0.1 },
+    { top: '25%', left: '25%', size: 45, type: 'ai', opacity: 0.12 },
+    { top: '30%', left: '75%', size: 60, type: 'pdf', opacity: 0.09 },
+    { top: '35%', left: '5%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '40%', left: '80%', size: 65, type: 'ai', opacity: 0.11 },
+    { top: '45%', left: '20%', size: 50, type: 'pdf', opacity: 0.08 },
+    { top: '50%', left: '70%', size: 60, type: 'upload', opacity: 0.1 },
+    { top: '55%', left: '15%', size: 40, type: 'ai', opacity: 0.12 },
+    { top: '60%', left: '85%', size: 70, type: 'pdf', opacity: 0.09 },
+    { top: '65%', left: '25%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '70%', left: '60%', size: 45, type: 'ai', opacity: 0.11 },
+    { top: '75%', left: '5%', size: 60, type: 'pdf', opacity: 0.08 },
+    { top: '80%', left: '90%', size: 50, type: 'upload', opacity: 0.1 },
+    { top: '85%', left: '30%', size: 65, type: 'ai', opacity: 0.12 },
+    { top: '90%', left: '70%', size: 40, type: 'pdf', opacity: 0.09 },
+    { top: '5%', left: '15%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '10%', left: '75%', size: 60, type: 'ai', opacity: 0.11 },
+    { top: '15%', left: '20%', size: 50, type: 'pdf', opacity: 0.08 },
+    { top: '20%', left: '85%', size: 70, type: 'upload', opacity: 0.1 },
+    { top: '25%', left: '30%', size: 45, type: 'ai', opacity: 0.12 },
+    { top: '30%', left: '70%', size: 60, type: 'pdf', opacity: 0.09 },
+    { top: '35%', left: '10%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '40%', left: '90%', size: 65, type: 'ai', opacity: 0.11 },
+    { top: '45%', left: '25%', size: 50, type: 'pdf', opacity: 0.08 },
+    { top: '50%', left: '80%', size: 60, type: 'upload', opacity: 0.1 },
+    { top: '55%', left: '20%', size: 40, type: 'ai', opacity: 0.12 },
+    { top: '60%', left: '75%', size: 70, type: 'pdf', opacity: 0.09 },
+    { top: '65%', left: '15%', size: 55, type: 'upload', opacity: 0.1 },
+    { top: '70%', left: '85%', size: 45, type: 'ai', opacity: 0.11 },
+    { top: '75%', left: '30%', size: 60, type: 'pdf', opacity: 0.08 },
+    { top: '80%', left: '70%', size: 50, type: 'upload', opacity: 0.1 },
+    { top: '85%', left: '5%', size: 65, type: 'ai', opacity: 0.12 },
+    { top: '90%', left: '90%', size: 40, type: 'pdf', opacity: 0.09 },
+  ];
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Database size={24} className="text-indigo-600" />
-          <h1 className="text-2xl font-bold text-gray-800">ChromaDB Document Manager</h1>
-        </div>
-        <div className="text-sm text-gray-500">
-          {documents.length} document{documents.length !== 1 ? 's' : ''} in database
-        </div>
-      </div>
-
-      {/* Upload section */}
-      <div 
-        className="border-2 border-dashed border-indigo-300 rounded-lg p-6 mb-6 bg-indigo-50 transition-all hover:border-indigo-500"
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <div className="text-center">
-          <Upload size={40} className="mx-auto mb-2 text-indigo-500" />
-          <h2 className="text-lg font-semibold mb-2">Upload Documents</h2>
-          <p className="text-gray-500 mb-4 text-sm">
-            Supported files: PDF, DOCX, TXT, CSV (Max size: 50MB)
-          </p>
-          
-          {selectedFile ? (
-            <div className="bg-white p-3 rounded-md border border-gray-200 mb-4 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                {getFileIcon(selectedFile.type)}
-                <div className="text-left">
-                  <p className="font-medium truncate max-w-xs">{selectedFile.name}</p>
-                  <p className="text-xs text-gray-500">{formatSize(selectedFile.size)}</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedFile(null)} 
-                className="text-gray-500 hover:text-red-500"
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 relative overflow-hidden">
+      {/* Background Vector Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {vectorPositions.map((vector, index) => (
+          <div
+            key={index}
+            className="absolute"
+            style={{ top: vector.top, left: vector.left, opacity: vector.opacity }}
+          >
+            {vector.type === 'pdf' && (
+              <svg
+                width={vector.size}
+                height={vector.size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0369A0"
+                strokeWidth="1"
               >
-                <X size={18} />
-              </button>
-            </div>
-          ) : (
-            <div 
-              onClick={() => fileInputRef.current.click()}
-              className="cursor-pointer bg-white border border-gray-300 rounded-lg p-4 flex items-center justify-center mb-4 hover:border-indigo-500 transition-colors"
-            >
-              <p className="text-sm text-gray-500">
-                Click to select a file or drag and drop
-              </p>
-            </div>
-          )}
-          
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileSelect}
-            className="hidden"
-            accept=".pdf,.docx,.txt,.csv"
-          />
-          
-          {isUploading && (
-            <div className="mb-4">
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-indigo-600 transition-all"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">Uploading... {uploadProgress}%</p>
-            </div>
-          )}
-          
-          {isProcessing && (
-            <div className="mb-4 flex items-center justify-center space-x-2">
-              <Loader2 size={18} className="animate-spin text-indigo-600" />
-              <p className="text-sm text-indigo-600">Processing document and creating embeddings...</p>
-            </div>
-          )}
-          
-          <button
-            onClick={handleUpload}
-            disabled={!selectedFile || isUploading || isProcessing}
-            className={`px-4 py-2 rounded-md font-medium ${
-              !selectedFile || isUploading || isProcessing
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700'
-            } transition-colors`}
-          >
-            {isUploading ? 'Uploading...' : isProcessing ? 'Processing...' : 'Upload to ChromaDB'}
-          </button>
-        </div>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+            )}
+            {vector.type === 'upload' && (
+              <svg
+                width={vector.size}
+                height={vector.size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0369A0"
+                strokeWidth="1"
+              >
+                <path d="M12 2v8m0-8l-4 4m4-4l4 4" />
+                <path d="M4 12h16" />
+              </svg>
+            )}
+            {vector.type === 'ai' && (
+              <svg
+                width={vector.size}
+                height={vector.size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0369A0"
+                strokeWidth="1"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 2a10 10 0 0 0 0 20m0-20a10 10 0 0 1 0 20" />
+                <path d="M12 9v3m0 0v3m-3-3h3m-3 0H9m6 0h3m-3 0h3" />
+              </svg>
+            )}
+          </div>
+        ))}
       </div>
 
-      {/* Notification */}
-      {notification && (
-        <div 
-          className={`mb-4 p-3 rounded-md flex items-center justify-between ${
-            notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-          }`}
-        >
-          <div className="flex items-center space-x-2">
-            {notification.type === 'success' ? (
-              <Check size={18} className="text-green-600" />
-            ) : (
-              <AlertCircle size={18} className="text-red-600" />
-            )}
-            <span>{notification.message}</span>
-          </div>
-          <button 
-            onClick={() => setNotification(null)}
-            className="text-gray-600 hover:text-gray-800"
+      {/* Main Content */}
+      <div className="p-6 max-w-5xl mx-auto relative z-20">
+        {/* Logout Button */}
+        <div className="absolute top-5 right-5">
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-red-50 transition-all group"
           >
-            <X size={18} />
+            <LogOut className="w-4 h-4 text-red-500 group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-medium text-red-500 group-hover:text-red-600">Logout</span>
           </button>
         </div>
-      )}
 
-      {/* Search and sort */}
-      <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
-        <div className="relative w-full sm:w-64">
-          <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search documents..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <label htmlFor="sort" className="text-sm text-gray-600">Sort by:</label>
+        {/* Logout Confirmation Modal */}
+        {showLogoutModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl">
+              <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+              <p className="text-gray-600 mb-6">Are you sure you want to log out?</p>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                >
+                  Yes, Logout
+                </button>
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Header */}
+        <h1 className="text-4xl font-extrabold mb-8 text-gray-900">
+          📄 Document <span className="text-[#0369A0]">Manager</span>
+        </h1>
+
+        {/* Notification */}
+        {notification && (
+          <div
+            className={`mb-6 p-4 rounded-lg text-white text-sm font-medium shadow-lg transform transition-all duration-300 ease-in-out animate-slide-down ${
+              notification.type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            }`}
+          >
+            {notification.message}
+          </div>
+        )}
+
+        {/* File Upload and Sort Controls */}
+        <div className="mb-8 flex flex-col sm:flex-row justify-between gap-4 items-center">
+          <div className="flex gap-3">
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileSelect}
+              accept=".pdf,.docx,.csv,.txt"
+            />
+            <button
+              onClick={() => fileInputRef.current.click()}
+              className="flex items-center gap-2 bg-[#0369A0] hover:bg-indigo-800 text-white px-5 py-2.5 rounded-lg shadow-md transition-all"
+            >
+              <Upload size={18} />
+              Select File
+            </button>
+            <button
+              onClick={handleUpload}
+              disabled={!selectedFile || isUploading}
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-md transition-all disabled:opacity-50"
+            >
+              {isUploading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="animate-spin" size={18} />
+                  Uploading... {uploadProgress}%
+                </span>
+              ) : (
+                'Upload'
+              )}
+            </button>
+          </div>
+
           <select
-            id="sort"
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+            className="border border-gray-200 px-4 py-2 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-indigo-500"
           >
-            <option value="date-desc">Date (Newest)</option>
-            <option value="date-asc">Date (Oldest)</option>
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
             <option value="name-asc">Name (A-Z)</option>
             <option value="name-desc">Name (Z-A)</option>
-            <option value="size-desc">Size (Largest)</option>
             <option value="size-asc">Size (Smallest)</option>
+            <option value="size-desc">Size (Largest)</option>
           </select>
         </div>
-      </div>
 
-      {/* Documents table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="grid grid-cols-12 bg-gray-100 p-3 border-b border-gray-200 font-medium text-gray-700">
-          <div className="col-span-6">Document</div>
-          <div className="col-span-2 text-center">Size</div>
-          <div className="col-span-2 text-center">Date Added</div>
-          <div className="col-span-1 text-center">Status</div>
-          <div className="col-span-1 text-center">Action</div>
+        {/* Upload Progress Bar */}
+        {isUploading && (
+          <div className="mb-6">
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className="bg-[#0369A0] h-2.5 rounded-full transition-all duration-300"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
+
+        {/* Search Bar */}
+        <div className="mb-6 relative">
+          <input
+            type="text"
+            placeholder="Search files..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white border border-gray-200 px-4 py-3 rounded-lg shadow-sm pl-10 focus:ring-2 focus:ring-indigo-500"
+          />
+          <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
         </div>
-        
+
+        {/* Document List */}
         {sortedDocuments.length > 0 ? (
-          <div className="divide-y divide-gray-200">
+          <div className="grid gap-4">
             {sortedDocuments.map((doc) => (
-              <div key={doc.id} className="grid grid-cols-12 p-3 hover:bg-gray-50 items-center">
-                <div className="col-span-6 flex items-center space-x-3">
-                  {getFileIcon(doc.type)}
-                  <span className="font-medium truncate">{doc.name}</span>
-                </div>
-                <div className="col-span-2 text-center text-sm text-gray-500">
-                  {formatSize(doc.size)}
-                </div>
-                <div className="col-span-2 text-center text-sm text-gray-500">
-                  {formatDate(doc.dateAdded)}
-                </div>
-                <div className="col-span-1 text-center">
-                  {doc.status === 'processed' ? (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      <Check size={12} className="mr-1" />
-                      Ready
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                      <Loader2 size={12} className="mr-1 animate-spin" />
-                      Processing
-                    </span>
-                  )}
-                </div>
-                <div className="col-span-1 text-center">
-                  {confirmDelete === doc.id ? (
-                    <div className="flex items-center space-x-1">
-                      <button
-                        onClick={() => confirmDeleteDocument(doc.id)}
-                        className="text-white bg-red-500 hover:bg-red-600 p-1 rounded"
-                      >
-                        <Check size={16} />
-                      </button>
-                      <button
-                        onClick={cancelDelete}
-                        className="text-white bg-gray-500 hover:bg-gray-600 p-1 rounded"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => initiateDelete(doc.id)}
-                      className="text-gray-500 hover:text-red-600 p-1 rounded hover:bg-red-50"
-                      disabled={doc.status === 'processing'}
+              <div
+                key={doc._id}
+                className="flex justify-between items-center bg-white border border-gray-100 rounded-lg p-4 shadow-sm hover:shadow-lg transition-all duration-200"
+              >
+                <div className="flex items-center gap-4">
+                  {getFileIcon(doc.filename)}
+                  <div>
+                    <a
+                      href={`${import.meta.env.VITE_APP_BASE_URL}/uploads/${doc.filename}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#0369A0] hover:underline font-medium"
                     >
-                      <Trash2 size={18} />
-                    </button>
-                  )}
+                      {doc.filename}
+                    </a>
+      
+                  </div>
                 </div>
+                <div className="text-sm text-gray-500">{formatDate(doc.createdAt)}</div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="p-6 text-center text-gray-500">
-            {searchQuery ? 'No documents match your search' : 'No documents in database'}
-          </div>
+          <p className="text-gray-400 text-center py-8">No documents found.</p>
         )}
       </div>
-
-      {/* Pagination (simplified for this example) */}
-      {documents.length > 0 && (
-        <div className="mt-4 flex justify-between items-center">
-          <p className="text-sm text-gray-500">Showing {sortedDocuments.length} of {documents.length} documents</p>
-          <div className="flex space-x-1">
-            <button className="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50">
-              Previous
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded-md bg-indigo-600 text-white hover:bg-indigo-700">
-              1
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50">
-              2
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50">
-              Next
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

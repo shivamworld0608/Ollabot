@@ -1,11 +1,11 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+import { restrictTo } from "../utils/restrict.js";
+import {upload} from "../config/multer.js";
 
-const { uploadPDF, queryLLM } = require("../controllers/aiController.js");
+import { uploadPDF, queryLLM } from "../controllers/aiController.js";
 
-router.post("/upload", upload.single("file"), uploadPDF);
-router.post("/query",upload.single("file"), queryLLM);
+router.post("/upload",restrictTo("Admin"), upload.single("file"), uploadPDF);
+router.post("/query",restrictTo("User"), upload.single("file"), queryLLM);
 
-module.exports = router;
+export default router;
