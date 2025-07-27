@@ -142,7 +142,7 @@ We welcome contributions from the community! Here’s how you can help:
 ## 🪪 License
 
 This project is licensed under the **MIT License**.  
-&copy; 2025 [Shivam Pandey](https://github.com/shivampandey)
+&copy; 2025 [Shivam Pandey](https://github.com/shivamworld0608)
 
 > You are free to use, modify, and distribute this project with attribution.
 
@@ -154,6 +154,6 @@ Have questions, feedback, or just want to connect? Feel free to reach out!
 
 | Platform     | Link                                                                 |
 |--------------|----------------------------------------------------------------------|
-| **GitHub**   | [@yourusername](https://github.com/yourusername)                    |
-| **Email**    | [your.email@example.com](mailto:your.email@example.com)             |
-| **LinkedIn** | [linkedin.com/in/yourusername](https://linkedin.com/in/yourusername) |
+| **GitHub**   | [@shivamworld0608](https://github.com/shivamworld0608)                    |
+| **Email**    | [shivamp.cs.22@nitj.ac.in](mailto:shivamp.cs.22@nitj.ac.in)             |
+| **LinkedIn** | [linkedin.com/in/pandey-shivam-]([https://linkedin.com/in/](https://www.linkedin.com/in/pandey-shivam-/)) |
