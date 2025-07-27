@@ -76,39 +76,52 @@ smart-pdf-qa/
 
 ---
 
-## 🧪 How It Works
-   ┌────────────┐
-   │  Upload PDF│
-   └─────┬──────┘
-         ↓
-┌─────────────────────────┐
-│ Chunk with page + text │
-└────────┬────────────────┘
-↓
-┌────────────┐
-│User Query │ ←─ Voice/Text Input
-└────┬───────┘
-↓
-┌───────────────────────────┐
-│Embed & Similarity Search │
-└────────┬──────────────────┘
-↓
-┌────────────┐
-│ Re-rank w/ │
-│ GPT │
-└────┬───────┘
-↓
-┌─────────────────────┐
-│ Generate Final Answer│
-└────┬────────────────┘
-↓
-Show in UI + Highlight PDF
+## ⚙️ Project Workflow
 
-yaml
-Copy
-Edit
+A clear separation of responsibilities ensures maintainability and scalability. The project is divided into two major flows:
 
 ---
+
+### 🛠️ Admin Workflow (Document Management & Embedding)
+
+| Step | Description |
+|------|-------------|
+| 1️⃣ | **PDF Upload**: Admin uploads PDF files via the dashboard. |
+| 2️⃣ | **PDF Parsing**: The system extracts text from each page using `PyMuPDF` or similar libraries. |
+| 3️⃣ | **Text Chunking**: Extracted text is split into smaller chunks (with token limits). |
+| 4️⃣ | **Metadata Addition**: Each chunk is enriched with metadata: `chunk_index`, `page_number`, `text_start`, `text_end`, `source`, etc. |
+| 5️⃣ | **Embedding Generation**: Each chunk is passed through an embedding model (e.g., `OpenAI`, `HuggingFace`) and stored in a vector database like `FAISS`. |
+| ✅ | **Ready for Querying**: Admin-processed files are now available for user interaction. |
+
+---
+
+### 🙋 User Workflow (Querying via Text or Voice)
+
+| Step | Description |
+|------|-------------|
+| 1️⃣ | **File Selection**: User selects a specific PDF file to query from the list of uploaded documents. |
+| 2️⃣ | **Input Method**: User types a question or uses voice input (handled via `react-speech-recognition`). |
+| 3️⃣ | **Embedding Query**: User query is converted into an embedding and searched in the vector database (FAISS). |
+| 4️⃣ | **Top-k Retrieval**: Most similar chunks are retrieved based on cosine similarity. |
+| 5️⃣ | **Contextual Prompt Construction**: Retrieved chunks and metadata are appended to the query for contextual understanding. |
+| 6️⃣ | **Answer Generation**: Query is sent to a language model (e.g., GPT-4) along with relevant context for accurate response generation. |
+| 7️⃣ | **Answer Display**: Answer is rendered on the UI. Additional metadata like page number and similarity score may be shown. |
+| 8️⃣ | **PDF Viewer Sync (Bonus)**: The highlighted chunk is shown in the PDF viewer with `react-pdf`. |
+| 🔁 | **Follow-up Questions Supported**: Prior Q&A context is stored and used for multi-turn conversation. |
+
+---
+
+✅ **Bonus Features Implemented**
+- 🔎 Similarity Score Display  
+- 📄 PDF Viewer with Highlighted Chunks  
+- 🎙️ Voice Input Support  
+- 🧠 Follow-up Question Context Handling  
+- 🔐 Admin-only Access for Upload & Embedding
+
+---
+
+Let me know if you'd like this workflow visualized in a diagram as well!
+
 
 ## 📷 Screenshots
 
