@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../Redux/authSlice';
 import PDFViewer from './pdfviewer';
 
-const API_URL = 'http://localhost:5000';
 
 export default function ChatbotInterface() {
   const [input, setInput] = useState('');
@@ -77,7 +76,7 @@ export default function ChatbotInterface() {
         config.headers['Content-Type'] = 'application/json';
       }
 
-      const res = await axios.post(`${API_URL}/api/query`, body, config);
+      const res = await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/api/query`, body, config);
       const data = res.data;
 
       const newBotMessage = {
@@ -203,7 +202,7 @@ export default function ChatbotInterface() {
   const handleFeedback = async (question, answer, isHelpful) => {
     try {
       await axios.post(
-        `${API_URL}/feedback/submit`,
+       `${import.meta.env.VITE_APP_BASE_URL}/feedback/submit`,
         {
           question,
           answer,
