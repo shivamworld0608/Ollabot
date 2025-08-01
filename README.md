@@ -109,13 +109,9 @@ A clear separation of responsibilities ensures maintainability and scalability. 
 
 ## 📷 Screenshots
 
-> Replace placeholders with your own screenshots
-
 | Chat Interface | PDF Highlight |
 |----------------|----------------|
-| <img width="1919" height="1034" alt="image" src="https://github.com/user-attachments/assets/955543ea-1176-40b1-a036-5f29bc2cd2db" />
- | <img width="1919" height="1031" alt="image" src="https://github.com/user-attachments/assets/8fb9c149-be35-4421-93a1-2be073d741b2" />
- |
+| <img width="1919" height="1034" alt="image" src="https://github.com/user-attachments/assets/955543ea-1176-40b1-a036-5f29bc2cd2db" />| <img width="1919" height="1031" alt="image" src="https://github.com/user-attachments/assets/8fb9c149-be35-4421-93a1-2be073d741b2" />|
 
 ---
 
