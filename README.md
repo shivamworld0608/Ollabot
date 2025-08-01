@@ -1,7 +1,6 @@
 <h1 align="center">🔍 Smart Q&A Assistant</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/License-MIT-blue.svg" />
   <img src="https://img.shields.io/badge/Status-In%20Progress-yellow.svg" />
   <img src="https://img.shields.io/badge/Built%20With-React%20%7C%20FastAPI%20%7C%20LangChain-7B68EE" />
 </p>
@@ -151,15 +150,6 @@ We welcome contributions from the community! Here’s how you can help:
 
 - ✅ **Test Before Push**  
   Ensure all features are tested and stable before submitting a pull request.
-
----
-
-## 🪪 License
-
-This project is licensed under the **MIT License**.  
-&copy; 2025 [Shivam Pandey](https://github.com/shivamworld0608)
-
-> You are free to use, modify, and distribute this project with attribution.
 
 ---
 
