@@ -113,7 +113,8 @@ A clear separation of responsibilities ensures maintainability and scalability. 
 
 | Chat Interface | PDF Highlight |
 |----------------|----------------|
-| ![](https://via.placeholder.com/450x300?text=Chat+UI) | ![](https://via.placeholder.com/450x300?text=PDF+Highlight) |
+| ![](https://via.placeholder.com/450x300?text=Chat+UI) | <img width="1919" height="1031" alt="image" src="https://github.com/user-attachments/assets/8fb9c149-be35-4421-93a1-2be073d741b2" />
+ |
 
 ---
 
