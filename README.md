@@ -54,8 +54,8 @@
 | Layer | Tools |
 |-------|-------|
 | **Frontend** | React.js, TailwindCSS, React-PDF, Web Speech API |
-| **Backend(Nodejs)** | Nodejs, Expressjs , OAuth, JWT |
-| **Backend(AI-Engine)** | Python, FastAPI , PyMuPDF |
+| **Backend (Nodejs)** | Node.js, Express.js , OAuth, JWT |
+| **Backend (AI-Engine)** | Python, FastAPI , PyMuPDF |
 | **LLM** | Ollama |
 | **Embeddings** | all-MiniLM-L6-v2 |
 | **Vector DB** | ChromaDB |
