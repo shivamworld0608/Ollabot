@@ -1,4 +1,4 @@
-<h1 align="center">🔍 Smart Q&A Assistant</h1>
+<h1 align="center">🔍 Smart RAG Based Q&A Assistant</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-In%20Progress-yellow.svg" />
@@ -121,7 +121,25 @@ A clear separation of responsibilities ensures maintainability and scalability. 
    git clone https://github.com/shivamworld0608/Ollabot.git
    cd Ollabot
 
-2. Create a .env file in frontend, backend
+2. **Create a .env file in frontend, backend**
+
+   ```bash
+   #OAuth Credentials
+   GOOGLE_CLIENT_ID=
+   GOOGLE_CLIENT_SECRET=
+
+   #JWT Credentials
+   JWT_SECRET=
+   JWT_EXPIRES_IN=
+   JWT_COOKIE_EXPIRES_IN=
+
+   #basic server credentials
+   MONGO_URI=
+   CLIENT_URL=
+   AI_ENGINE_URL=
+   SERVER_URL=
+   PORT=
+
 
 3. **AI-Engine Setup (FastAPI)**
 
@@ -130,19 +148,19 @@ A clear separation of responsibilities ensures maintainability and scalability. 
    pip install -r requirements.txt
    python main.py
 
-4. Backend Setup (Nodejs,Express)
+4. **Backend Setup (Nodejs,Express)**
    ```bash
     cd backend
     npm i
     npx nodemon server.js
 
-5. Frontend Setup (React)
+5. **Frontend Setup (React)**
     ```bash
     cd frontend
     npm install
     npm run dev
 
-# Make sure to set the correct backend URL in your frontend env
+ **Make sure to set the correct backend URL in your frontend env and also correct ai-engine url in backend env**
 
 ## 🤝 Contributing
 
@@ -168,4 +186,4 @@ Have questions, feedback, or just want to connect? Feel free to reach out!
 |--------------|----------------------------------------------------------------------|
 | **GitHub**   | [@shivamworld0608](https://github.com/shivamworld0608)                    |
 | **Email**    | [shivamp.cs.22@nitj.ac.in](mailto:shivamp.cs.22@nitj.ac.in)             |
-| **LinkedIn** | [linkedin.com/in/pandey-shivam-]([https://linkedin.com/in/](https://www.linkedin.com/in/pandey-shivam-/) |
+| **LinkedIn** | [linkedin.com/in/pandey-shivam-](https://www.linkedin.com/in/pandey-shivam-/) |
