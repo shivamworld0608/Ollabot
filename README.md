@@ -45,7 +45,6 @@
 | 🔍 **Semantic Search** | Embed + retrieve most relevant chunks using similarity scoring |
 | 🧠 **Re-Ranking** | Use LLM to sort top chunks before answering |
 | 💬 **Chat Support** | Ask questions via text or voice |
-| 🧭 **Follow-up Memory** | Retain context for follow-up questions |
 | 📊 **Similarity Scores** | View how relevant each chunk is to your query |
 | 🔦 **PDF Highlighting** | See exactly which paragraph the answer came from |
 
