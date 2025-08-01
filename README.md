@@ -142,7 +142,7 @@ A clear separation of responsibilities ensures maintainability and scalability. 
     npm install
     npm run dev
 
-#Make sure to set the correct backend URL in your frontend env
+# Make sure to set the correct backend URL in your frontend env
 
 ## 🤝 Contributing
 
@@ -168,4 +168,4 @@ Have questions, feedback, or just want to connect? Feel free to reach out!
 |--------------|----------------------------------------------------------------------|
 | **GitHub**   | [@shivamworld0608](https://github.com/shivamworld0608)                    |
 | **Email**    | [shivamp.cs.22@nitj.ac.in](mailto:shivamp.cs.22@nitj.ac.in)             |
-| **LinkedIn** | [linkedin.com/in/pandey-shivam-]([https://linkedin.com/in/](https://www.linkedin.com/in/pandey-shivam-/)) |
+| **LinkedIn** | [linkedin.com/in/pandey-shivam-]([https://linkedin.com/in/](https://www.linkedin.com/in/pandey-shivam-/) |
