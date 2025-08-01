@@ -119,20 +119,23 @@ A clear separation of responsibilities ensures maintainability and scalability. 
 git clone https://github.com/shivamworld0608/Ollabot.git
 cd Ollabot
 
-###2. AI-Engine Setup (FastAPI)
-cd ai-engine
-pip install -r requirements.txt
-python main.py
+### 2. Create a .env file in frontend, backend
 
-###2. Backend Setup (Nodejs,Express)
-cd backend
-npm i
-npx nodemon server.js
 
-### 3. Frontend Setup (React)
-cd frontend
-npm install
-npm run dev
+### 3. AI-Engine Setup (FastAPI)
+ cd ai-engine
+ pip install -r requirements.txt
+ python main.py
+
+### 4. Backend Setup (Nodejs,Express)
+ cd backend
+ npm i
+ npx nodemon server.js
+
+### 5. Frontend Setup (React)
+ cd frontend
+ npm install
+ npm run dev
 
 #Make sure to set the correct backend URL in your frontend env
 
