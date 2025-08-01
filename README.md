@@ -6,8 +6,7 @@
 </p>
 
 <p align="center">
-  AI-powered system to ask <strong>natural language questions</strong> from uploaded PDF documents.
-  Combines <strong>semantic search</strong>, <strong>LLM-based re-ranking</strong>, and <strong>context memory</strong> for accurate, explainable answers.
+  AI-powered assistant that answers natural language questions from uploaded PDFs using semantic retrieval, and LLM-based re-ranking. Delivers accurate, explainable responses with relevance scores and direct PDF highlighting for traceability.
 </p>
 
 ---
