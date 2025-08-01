@@ -15,9 +15,8 @@
 
 ## 📸 Demo
 
-> Replace with your actual demo gif or screenshots
+<img width="1897" height="1025" alt="image" src="https://github.com/user-attachments/assets/39827420-e22c-4473-8fb2-673c8d6414c4" />
 
-![Demo Screenshot](https://via.placeholder.com/1000x500.png?text=Demo+Placeholder)
 
 ---
 
