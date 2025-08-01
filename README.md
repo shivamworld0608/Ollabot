@@ -2,7 +2,8 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-In%20Progress-yellow.svg" />
-  <img src="https://img.shields.io/badge/Built%20With-React%20%7C%20FastAPI%20%7C%20LangChain-7B68EE" />
+<img src="https://img.shields.io/badge/Built%20With-Node.js%20%7C%20Ollama%20%7C%20LLM%20%7C%20ChromaDB-7B68EE" />
+
 </p>
 
 <p align="center">
