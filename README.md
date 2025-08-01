@@ -117,17 +117,17 @@ A clear separation of responsibilities ensures maintainability and scalability. 
 
 ### 1. Clone the Repo
 git clone https://github.com/shivamworld0608/Ollabot.git
-cd smart-pdf-qa
+cd Ollabot
 
 ###2. AI-Engine Setup (FastAPI)
 cd ai-engine
 pip install -r requirements.txt
-python app.py
+python main.py
 
 ###2. Backend Setup (Nodejs,Express)
-cd ai-engine
-pip install -r requirements.txt
-python app.py
+cd backend
+npm i
+npx nodemon server.js
 
 ### 3. Frontend Setup (React)
 cd frontend
