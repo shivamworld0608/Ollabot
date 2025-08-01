@@ -343,7 +343,7 @@ export default function DocumentManager() {
             <button
               onClick={handleUpload}
               disabled={!selectedFile || isUploading}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-md transition-all disabled:opacity-50"
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-md transition-all "
             >
               {isUploading ? (
                 <span className="flex items-center gap-2">

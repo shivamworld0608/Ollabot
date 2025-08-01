@@ -18,6 +18,7 @@
     "antd": "^5.26.6",
     "aos": "^2.3.4",
     "axios": "^1.11.0",
+    "framer-motion": "^12.23.12",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",

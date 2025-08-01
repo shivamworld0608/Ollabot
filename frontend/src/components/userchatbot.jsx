@@ -6,6 +6,7 @@ import { LogOut } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../Redux/authSlice';
 import PDFViewer from './pdfviewer';
+import bgImage from '../assets/bg3.jpg';
 
 
 export default function ChatbotInterface() {
@@ -225,7 +226,12 @@ export default function ChatbotInterface() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f8fafc]">
+    <div className="relative min-h-screen overflow-hidden bg-[#f8fafc]" style={{
+    backgroundImage: `url(${bgImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat', 
+  }}>
       {/* Logout Button */}
       <div className="absolute top-5 right-5 z-20">
         <button
@@ -237,28 +243,10 @@ export default function ChatbotInterface() {
         </button>
       </div>
 
-      {/* Fullscreen SVG Background */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-10 pointer-events-none z-0"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 100"
-        fill="none"
-      >
-        <defs>
-          <pattern id="tiny-icons" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-            <rect x="2" y="2" width="2" height="2" rx="1" ry="1" fill="#0369A0" />
-            <circle cx="15" cy="5" r="2" stroke="#0369A0" strokeWidth="0.8" fill="none" />
-            <line x1="16.5" y1="6.5" x2="18" y2="8" stroke="#0369A0" strokeWidth="0.8" />
-            <ellipse cx="10" cy="15" rx="3" ry="1.5" fill="#0369A0" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#tiny-icons)" />
-      </svg>
-
       <div className="relative z-10 w-full px-4 mt-20">
 
         {/* Greeting */}
-        <div className="text-center mb-1 text-xl font-semibold text-[#0369A0]">
+        <div className="text-center mb-1 text-xl font-bold text-black">
           {getGreeting()}, {username}
         </div>
         <div className="flex flex-col w-full max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden h-96 border border-gray-200 mt-4">
