@@ -88,7 +88,7 @@ A clear separation of responsibilities ensures maintainability and scalability. 
 |------|-------------|
 | 1️⃣ | **File Selection**: User selects a specific PDF file to query from the list of uploaded documents. |
 | 2️⃣ | **Input Method**: User types a question or uses voice input (handled via `react-speech-recognition`). |
-| 3️⃣ | **Embedding Query**: User query is converted into an embedding and searched in the vector database (FAISS). |
+| 3️⃣ | **Embedding Query**: User query is converted into an embedding and searched in the vector database (ChromaDB). |
 | 4️⃣ | **Top-k Retrieval**: Most similar chunks are retrieved based on cosine similarity. |
 | 5️⃣ | **Contextual Prompt Construction**: Retrieved chunks and metadata are appended to the query for contextual understanding. |
 | 6️⃣ | **Answer Generation**: Query is sent to a language model (e.g., GPT-4) along with relevant context for accurate response generation. |
