@@ -126,20 +126,23 @@ A clear separation of responsibilities ensures maintainability and scalability. 
 
    ```bash
    #OAuth Credentials
-   GOOGLE_CLIENT_ID=
-   GOOGLE_CLIENT_SECRET=
+   GOOGLE_CLIENT_ID=87796226935-nr26lcqfgqfsoepgr3h30qc4nn224lqt.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=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
+
 
    #JWT Credentials
-   JWT_SECRET=
-   JWT_EXPIRES_IN=
-   JWT_COOKIE_EXPIRES_IN=
+   JWT_SECRET="b1a26c4a14718e4244721cc7db67f6e42befce460c32f7e08f2040cb07ae4ed3"
+   JWT_EXPIRES_IN="30d"
+   JWT_COOKIE_EXPIRES_IN=30
 
    #basic server credentials
-   MONGO_URI=
-   CLIENT_URL=
-   AI_ENGINE_URL=
-   SERVER_URL=
-   PORT=
+   MONGO_URI="mongodb+srv://pandeyashishivam:S4mdMS0SqdOlTRN1@cluster0.8mahmum.mongodb.net/"
+   CLIENT_URL="http://localhost:5173"
+   AI_ENGINE_URL="http://localhost:8000"
+   SERVER_URL="http://localhost:5000"
+   PORT=5000
+
+
    
 3. **Create a .env file in frontend**
 
