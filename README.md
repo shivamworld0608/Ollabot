@@ -122,7 +122,7 @@ A clear separation of responsibilities ensures maintainability and scalability. 
    git clone https://github.com/shivamworld0608/Ollabot.git
    cd Ollabot
 
-2. **Create a .env file in frontend, backend**
+2. **Create a .env file in backend**
 
    ```bash
    #OAuth Credentials
@@ -140,6 +140,11 @@ A clear separation of responsibilities ensures maintainability and scalability. 
    AI_ENGINE_URL=
    SERVER_URL=
    PORT=
+   
+3. **Create a .env file in frontend**
+
+   ```bash
+   VITE_APP_BASE_URL='http://localhost:5000'
 
 
 3. **AI-Engine Setup (FastAPI)**
